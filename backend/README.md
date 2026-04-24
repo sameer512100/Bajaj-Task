@@ -129,7 +129,7 @@ Sample success response (`200`):
 
 ```json
 {
-  "user_id": "sameer__5121",
+  "user_id": "sameer06122005",
   "email_id": "ss5250@srmist.edu.in",
   "college_roll_number": "RA2311026010628",
   "hierarchies": [
