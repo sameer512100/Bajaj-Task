@@ -1,81 +1,150 @@
-# SRM BFHL Full Stack Challenge
+# Bajaj Full Stack Task
 
-A MERN-stack implementation of the SRM Full Stack Engineering Challenge.
+Full stack submission for the Bajaj Finserv Health / SRM challenge.
+
+This project contains:
+
+- `backend/`: Node.js + Express API for processing hierarchy edge data
+- `frontend/`: React + Vite + TypeScript UI for submitting input and visualizing the response
+
+## Live Links
+
+- Frontend: `https://bajaj-task-peach.vercel.app/`
+- Backend: `https://bajaj-backend-moem.onrender.com`
 
 ## Project Structure
 
-```
-srm-bfhl/
-├── backend/          # Node.js + Express REST API
-│   ├── server.js
-│   └── package.json
-└── frontend/         # React SPA
-    ├── src/
-    │   ├── App.jsx
-    │   ├── App.css
-    │   ├── index.js
-    │   ├── index.css
-    │   └── components/
-    │       └── TreeView.jsx
-    └── package.json
+```text
+Bajaj-Task/
+  backend/
+    server.js
+    package.json
+    src/
+      app.js
+      config/
+      controllers/
+      models/
+      routes/
+      services/
+  frontend/
+    package.json
+    vite.config.ts
+    src/
+      components/
+      hooks/
+      lib/
+      pages/
 ```
 
-## Setup & Run Locally
+## Backend Summary
 
-### 1. Backend
+The backend exposes:
+
+- `GET /` for a health check
+- `POST /bfhl` for processing edge input like `A->B`
+
+The API:
+
+- validates entries
+- tracks invalid entries
+- tracks duplicate edges
+- builds hierarchy groups
+- detects cycles
+- returns user identity details and a summary object
+
+CORS is enabled for all origins so evaluator clients can access the API from a different origin.
+
+## Frontend Summary
+
+The frontend:
+
+- accepts comma-separated or newline-separated edge input
+- sends requests to the deployed backend
+- displays hierarchy trees, cycles, duplicates, invalid entries, and summary stats
+
+The frontend reads the backend URL from:
+
+```bash
+VITE_API_BASE_URL=https://bajaj-backend-moem.onrender.com
+```
+
+If that variable is not set, the code falls back to the same deployed backend URL in `frontend/src/lib/api.ts`.
+
+## Local Setup
+
+### Backend
 
 ```bash
 cd backend
 npm install
-node server.js        
+npm start
 ```
 
-**Before running**, open `server.js` and update the identity fields:
+Default local backend URL:
 
-```js
-const USER_ID = "yourname_ddmmyyyy";
-const EMAIL_ID = "your@email.com";
-const COLLEGE_ROLL_NUMBER = "your_roll_number";
+```text
+http://localhost:5000
 ```
 
-### 2. Frontend
+### Frontend
 
 ```bash
 cd frontend
 npm install
-npm start             
+npm run dev
 ```
 
-The frontend proxies `/bfhl` to `http://localhost:5000` automatically (via `"proxy"` in `package.json`).
+Set this in `frontend/.env` for local or deployed frontend builds:
 
-## Deployment
+```bash
+VITE_API_BASE_URL=https://bajaj-backend-moem.onrender.com
+```
 
-### Backend (Render / Railway / Fly.io)
-1. Create a new Web Service pointing to the `backend/` directory.
-2. Set Start Command: `node server.js`
-3. Note the deployed URL (e.g. `https://srm-bfhl.onrender.com`)
+If you want the frontend to call a local backend instead, use:
 
-### Frontend (Vercel / Netlify)
-1. Create a project pointing to the `frontend/` directory.
-2. Set environment variable:
-   ```
-   REACT_APP_API_URL=https://your-backend-url.com
-   ```
-3. Build command: `npm run build`
-4. Output directory: `build`
+```bash
+VITE_API_BASE_URL=http://localhost:5000
+```
 
-## API Reference
+## API Example
 
-### POST /bfhl
+### Request
 
-**Request:**
 ```json
-{ "data": ["A->B", "A->C", "B->D"] }
+{
+  "data": ["A->B", "B->C", "C->D"]
+}
 ```
 
-**Response:** See the challenge specification for the full schema.
+### Response Shape
+
+```json
+{
+  "user_id": "sameer_06122005",
+  "email_id": "ss5250@srmist.edu.in",
+  "college_roll_number": "RA2311026010628",
+  "hierarchies": [],
+  "invalid_entries": [],
+  "duplicate_edges": [],
+  "summary": {
+    "total_trees": 0,
+    "total_cycles": 0,
+    "largest_tree_root": ""
+  }
+}
+```
 
 ## Tech Stack
-- **Backend**: Node.js, Express, CORS
-- **Frontend**: React 18, CSS Variables
-- **Hosting**: Any (Render + Vercel recommended)
+
+- Backend: Node.js, Express, CORS
+- Frontend: React, Vite, TypeScript, Tailwind CSS, shadcn/ui
+- Deployment: Render, Vercel
+
+## Final Recheck
+
+The current codebase is aligned end to end:
+
+- frontend requests `POST /bfhl` on the deployed backend
+- backend accepts cross-origin requests
+- request and response shapes match between UI and API
+- deployed backend URL matches the frontend environment variable
