@@ -19,28 +19,31 @@ function normalizeOrigin(origin) {
 const allowedOrigins = [
   ...new Set(
     [...DEFAULT_ALLOWED_ORIGINS, ...(process.env.CORS_ORIGIN || "").split(",")]
-	.map((origin) => origin.trim())
+      .map((origin) => origin.trim())
       .filter(Boolean)
       .map(normalizeOrigin)
   ),
 ];
 
 const corsOptions =
-	allowedOrigins.length === 0
-		? {}
-		: {
-				origin(origin, callback) {
+  allowedOrigins.length === 0
+    ? {}
+    : {
+        origin(origin, callback) {
           if (!origin) {
             return callback(null, true);
           }
 
           if (allowedOrigins.includes(normalizeOrigin(origin))) {
-						return callback(null, true);
-					}
+            return callback(null, true);
+          }
 
-					return callback(new Error("Not allowed by CORS"));
-				},
-			};
+          return callback(new Error("Not allowed by CORS"));
+        },
+        methods: ["GET", "POST", "OPTIONS"],
+        allowedHeaders: ["Content-Type"],
+        optionsSuccessStatus: 204,
+      };
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));

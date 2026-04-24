@@ -1,7 +1,13 @@
 // API base URL — defaults to deployed backend URL, can be overridden by VITE_API_BASE_URL.
-export const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ||
-  "https://bajaj-backend-moem.onrender.com";
+const DEFAULT_API_BASE_URL = "https://bajaj-backend-moem.onrender.com";
+
+function normalizeBaseUrl(value?: string) {
+  return (value || DEFAULT_API_BASE_URL).trim().replace(/\/+$/, "");
+}
+
+export const API_BASE_URL = normalizeBaseUrl(
+  import.meta.env.VITE_API_BASE_URL as string | undefined
+);
 
 export interface Hierarchy {
   root: string;

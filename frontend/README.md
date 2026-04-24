@@ -10,8 +10,16 @@ React + Vite frontend for submitting edge data to the BFHL backend and visualizi
 
 ## Environment
 
-Create a .env file when connecting to deployed backend:
+Create a `.env` file when connecting to the deployed backend:
 
+```bash
 VITE_API_BASE_URL=https://bajaj-backend-moem.onrender.com
+```
 
-If not set, the app falls back to the placeholder URL in src/lib/api.ts.
+If not set, the app falls back to the deployed Render backend in `src/lib/api.ts`.
+
+For Vercel, add the same variable in the project settings:
+
+```bash
+VITE_API_BASE_URL=https://bajaj-backend-moem.onrender.com
+```

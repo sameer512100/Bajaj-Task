@@ -11,6 +11,10 @@ interface Props {
 
 export const HierarchyCard = ({ hierarchy, index }: Props) => {
   const { root, tree, depth, has_cycle } = hierarchy;
+  const rootChildren =
+    tree && typeof tree === "object" && root in tree
+      ? (tree[root] as Record<string, unknown> | null)
+      : null;
 
   return (
     <Card
@@ -44,10 +48,7 @@ export const HierarchyCard = ({ hierarchy, index }: Props) => {
         </div>
       ) : (
         <div className="rounded-lg bg-muted/40 border border-border/60 p-2 max-h-[400px] overflow-auto">
-          <TreeNode
-            name={root}
-            children={tree as Record<string, unknown> | null}
-          />
+          <TreeNode name={root} children={rootChildren} />
         </div>
       )}
     </Card>
